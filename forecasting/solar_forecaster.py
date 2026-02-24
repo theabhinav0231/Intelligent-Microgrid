@@ -126,15 +126,29 @@ class SolarForecaster:
         print(f"Model saved to '{self.model_dir}/'")
 
     def load_model(self) -> bool:
-        model_path   = os.path.join(self.model_dir, "solar_model.json")
+        model_path = os.path.join(self.model_dir, "solar_model.json")
+        # Support both naming conventions
         encoder_path = os.path.join(self.model_dir, "label_encoder.pkl")
-        if os.path.exists(model_path) and os.path.exists(encoder_path):
-            self.model = xgb.XGBRegressor()
-            self.model.load_model(model_path)
-            self.label_encoder = joblib.load(encoder_path)
-            self._is_trained = True
-            return True
-        return False
+        fallback_encoder_path = os.path.join(self.model_dir, "solar_forecaster.pkl")
+
+        if not os.path.exists(model_path):
+            return False
+
+        actual_encoder_path = None
+        if os.path.exists(encoder_path):
+            actual_encoder_path = encoder_path
+        elif os.path.exists(fallback_encoder_path):
+            actual_encoder_path = fallback_encoder_path
+
+        if actual_encoder_path is None:
+            return False
+
+        self.model = xgb.XGBRegressor()
+        self.model.load_model(model_path)
+        self.label_encoder = joblib.load(actual_encoder_path)
+        self._is_trained = True
+        print(f"Model loaded from '{self.model_dir}/'")
+        return True
 
     # ------------------------------------------------------------------
     # PREDICTION
