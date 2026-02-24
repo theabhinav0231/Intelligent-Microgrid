@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from io import StringIO
 import pvlib
-from pvlib.pvsystem import PVSystem, ModelChain
+from pvlib.pvsystem import PVSystem
 from pvlib.location import Location
 from pvlib.temperature import TEMPERATURE_MODEL_PARAMETERS
 
@@ -14,7 +14,7 @@ CITIES = {
     "Noida": {"lat": 28.5355, "lon": 77.3910, "elev": 200},
     "Gurugram": {"lat": 28.4595, "lon": 77.0266, "elev": 217},
     "Chandigarh": {"lat": 30.7333, "lon": 76.7794, "elev": 321},
-    "Dehradun": {"lat": 30.3165, "lg": 78.0322, "elev": 640}
+    "Dehradun": {"lat": 30.3165, "lon": 78.0322, "elev": 640}
 }
 
 YEARS = [2019, 2020, 2021, 2022, 2023]

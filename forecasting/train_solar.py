@@ -1,27 +1,40 @@
-from forecasting.solar_forecaster import SolarForecaster
 import os
+import sys
+
+# Ensure we can import from the project root
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from forecasting.solar_forecaster import SolarForecaster
+
+DATA_PATH  = "forecasting/forecasting/data/training_data_north_india.csv"
+MODEL_DIR  = "models"
 
 def main():
-    gen_path = "forecasting/data/Plant_1_Generation_Data.csv"
-    weather_path = "forecasting/data/Plant_1_Weather_Sensor_Data.csv"
-    
-    if not os.path.exists(gen_path) or not os.path.exists(weather_path):
-        print("Data files not found. Please run the download commands first.")
+    if not os.path.exists(DATA_PATH):
+        print(f"Dataset not found at: {DATA_PATH}")
+        print("Please run forecasting/data_curator.py first.")
         return
 
-    print("Initializing SolarForecaster...")
-    forecaster = SolarForecaster()
-    
-    print("Loading data...")
-    df = forecaster.load_data(gen_path, weather_path)
-    
-    print(f"Dataset loaded. Total records: {len(df)}")
-    
-    print("Starting model training...")
-    mape = forecaster.train(df)
-    
-    print(f"Training complete. Final MAPE: {mape:.2f}%")
-    print("Model saved to models/solar_model.json")
+    forecaster = SolarForecaster(model_dir=MODEL_DIR)
+
+    print("=" * 50)
+    print("  Solar Generation Forecasting — Training")
+    print("=" * 50)
+
+    df = forecaster.load_data(DATA_PATH)
+    metrics = forecaster.train(df)
+
+    print("\n--- Feature Importances ---")
+    print(forecaster.feature_importance().to_string(index=False))
+
+    print(f"\nFinal Results:")
+    print(f"  RMSE : {metrics['rmse']} kW")
+    print(f"  MAPE : {metrics['mape']}% (daytime hours)")
+
+    if metrics['mape'] < 15:
+        print(f"\n  Target MAPE < 15% achieved!")
+    else:
+        print(f"\n  MAPE above target. Consider tuning hyperparameters.")
 
 if __name__ == "__main__":
     main()
