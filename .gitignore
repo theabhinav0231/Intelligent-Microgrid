@@ -31,15 +31,7 @@ bin/
 lib/
 include/
 
-# Data and Models (Avoid tracking large datasets or binary model files)
-forecasting/data/
-models/
-results/
-*.csv
-*.json
-*.joblib
-*.pkl
-
+forecasting**/data/raw
 # Environment Variables
 .env
 
