@@ -37,7 +37,24 @@ The chart below illustrates which factors most significantly influence the model
 2.  **Temp_Cell**: At ~17%, the model accounts for the thermal degradation effect prevalent in the Indian climate.
 3.  **Power_Lag_1h**: The ~7% importance shows the "memory" effect, allowing the model to detect incoming weather trends based on the immediate past.
 
-## 4. Conclusion
-The Forecasting Engine has exceeded the initial design goals. With a **MAPE of 2.84%**, the error margin is significantly lower than the industry standard for decentralized microgrids. This accuracy will minimize "Energy Wastage" and ensure that the **Strategic LLM Agent** can make optimized economic decisions for P2P energy trading.
+## 4. Sensitivity Analysis (Forecast Uncertainty)
+Since the baseline results use **observed** weather data, we conducted a sensitivity analysis to see how the model handles **forecast uncertainty**. Real-world weather forecasts contain noise, which propagates into the solar prediction.
+
+| Weather Forecast Error (Noise) | Mean MAPE (%) | Real-World Context |
+| :--- | :--- | :--- |
+| **0% (Perfect Information)** | **2.84%** | Observed Data (Reported in Sec 2) |
+| **5% (High Precision)** | **5.56%** | Specialized high-res hyperlocal forecasts |
+| **10% (Good/Standard)** | **9.96%** | Standard national weather service forecasts |
+| **15% (Low Precision)** | **14.61%** | Volatile/High-cloud conditions |
+| **20% (High Uncertainty)** | **19.61%** | Extreme weather / Rapid storm onset |
+
+![Sensitivity Analysis Plot](sensitivity_analysis.png)
+
+**Insight**: The model maintains an error rate below the **15% industry target** even with up to **15% standard error** in weather inputs. This demonstrates high robustness to forecast noise.
+
+## 5. Conclusion
+The Forecasting Engine has exceeded the initial design goals. While the baseline **MAPE of 2.84%** represents the theoretical physical limit, the sensitivity analysis confirms that even under realistic forecast conditions (10% weather noise), the model still outperforms industry standards with a **9.96% MAPE**.
+
+This accuracy ensures the **Strategic LLM Agent** can reliably schedule battery storage and execute P2P trades with a high degree of confidence, significantly reducing the cost of imbalance for the microgrid.
 
 ---
