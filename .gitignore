@@ -31,7 +31,8 @@ bin/
 lib/
 include/
 
-forecasting**/data/raw
+forecasting/data/raw/
+forecasting/data/**/*.csv
 # Environment Variables
 .env
 
