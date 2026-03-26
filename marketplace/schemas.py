@@ -50,6 +50,7 @@ class OrderResponse(BaseModel):
     remaining_kwh: float
     price_per_kwh: float
     status: str
+    city: Optional[str] = None
     created_at: datetime
 
     class Config:
@@ -66,7 +67,67 @@ class TradeResponse(BaseModel):
     quantity_kwh: float
     price_per_kwh: float
     total_cost: float
+    city: Optional[str] = None
     executed_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class NodeCreate(BaseModel):
+    """POST /nodes — register a new node."""
+    id: str = Field(..., min_length=1, max_length=50)
+    city: str = Field(..., min_length=1, max_length=50)
+    battery_cap_kwh: float = Field(default=10.0, gt=0)
+
+
+class NodeResponse(BaseModel):
+    """Information about a registered node."""
+    id: str
+    city: str
+    battery_cap_kwh: float
+    is_active: bool
+    registered_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class WalletResponse(BaseModel):
+    """Node wallet balance and history."""
+    node_id: str
+    balance_inr: float
+    total_earned: float
+    total_spent: float
+    last_updated: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class SettlementResponse(BaseModel):
+    """A single financial settlement record."""
+    id: int
+    trade_id: int
+    buyer_node_id: str
+    seller_node_id: str
+    amount_inr: float
+    settled_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class OHLCVCandleResponse(BaseModel):
+    """A single market candle for charting."""
+    interval: str
+    open_price: float
+    high_price: float
+    low_price: float
+    close_price: float
+    volume_kwh: float
+    candle_ts: datetime
+    city: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -78,9 +139,9 @@ class MarketSnapshot(BaseModel):
     pending_sell_orders: List[OrderResponse]
     total_buy_volume_kwh: float
     total_sell_volume_kwh: float
-    best_buy_price: Optional[float] = None     # Highest pending buy
-    best_sell_price: Optional[float] = None     # Lowest pending sell
-    spread: Optional[float] = None              # best_buy - best_sell (if both exist)
+    best_buy_price: Optional[float] = None
+    best_sell_price: Optional[float] = None
+    spread: Optional[float] = None
 
 
 class MarketStats(BaseModel):
@@ -90,6 +151,7 @@ class MarketStats(BaseModel):
     total_value_inr: float
     average_price_per_kwh: Optional[float] = None
     total_pending_orders: int
-    active_nodes: int                           # Unique node_ids with pending orders
-    grid_buy_price: float = GRID_BUY_PRICE      # Reference for comparison
+    active_nodes: int
+    grid_buy_price: float = GRID_BUY_PRICE
     grid_sell_price: float = GRID_SELL_PRICE
+    city: Optional[str] = None                 # If filtered by city
